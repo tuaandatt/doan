@@ -91,6 +91,27 @@ File được đọc và trả về cho người dùng mà không có bất kỳ
 
 => Tất cả các nguyên do trên đã dẫn đến lỗ hổng path traversal đây là một lỗ hổng bảo mật cho phép kẻ tấn công truy cập trái phép vào các file và thư mục bên ngoài phạm vi được chỉ định của ứng dụng web
 
+**Giải pháp khắc phục:**
+
+![image](https://github.com/user-attachments/assets/d4019988-8dd5-4ed4-888a-73a380686097)
+
+Lấy tên file từ tham số GET và xử lý
+
+$file_name = basename($_GET['file_name']);
+
+Mục đích:
+Lấy giá trị tham số file_name từ URL.
+
+Dùng hàm basename() để loại bỏ các thành phần đường dẫn không hợp lệ (như ../) nhằm ngăn chặn lỗ hổng Path Traversal.
+
+$file_path = '/var/www/html/images/' . $file_name;
+
+Mục đích: Tạo đường dẫn đầy đủ đến file dựa trên thư mục mặc định /var/www/html/images/
+
+Kiểm tra tính hợp lệ của file
+
+if (file_exists($file_path) && is_file($file_path)) {
+
 
 **2. File Upload Vulnerability**
 
@@ -182,3 +203,84 @@ Không thiết lập giới hạn kích thước tệp tải lên có thể khi�
 
 ![image](https://github.com/user-attachments/assets/b7bb7780-589e-46ff-80a4-aaa4b4215b9c)
 
+Giải pháp khắc phục:
+
+![image](https://github.com/user-attachments/assets/aafb824c-723a-42d1-ab24-0fd76971a58c)
+
+![image](https://github.com/user-attachments/assets/dc58456d-03b3-4182-baa1-22171ef41684)
+
+DEMO: d![image](https://github.com/user-attachments/assets/8d631e3e-40da-4526-bc7b-dd4918ca0db7)
+
+Gửi lại hình ảnh bình thường với đuôi .jpg
+
+![image](https://github.com/user-attachments/assets/3e8da87f-e1e4-43d2-8745-a0d527e99904)
+
+Gửi file ảnh vào hệ thống
+
+![image](https://github.com/user-attachments/assets/e760c51b-599a-47ce-9caa-8c14609e4e49)
+
+Đưa gói tin bắt được vào Repeater để phân tích
+
+![image](https://github.com/user-attachments/assets/7fbe8919-a5fc-4c38-81d0-660dc014a57c)
+
+Xóa toàn bộ nội dung file ảnh đã gửi
+
+![image](https://github.com/user-attachments/assets/698b4811-ac3c-4652-a9a2-ebb82624c17d)
+
+Copy đoạn payload dùng để điều khiển hệ thống thay thế nội dung file ảnh vừa xóa trong Repeater
+
+![image](https://github.com/user-attachments/assets/c808a8c3-c301-496a-b022-861107fbb661)
+
+Thay đoạn code kiểm thử vào Repeater từ sửa đổi file ảnh
+
+![image](https://github.com/user-attachments/assets/ac37a59d-56bf-4fc6-b691-b4a60cd7f78d)
+
+Sửa đổi tên file ảnh .jpg thành tuandat.php
+
+![image](https://github.com/user-attachments/assets/764a32fa-863e-408d-9006-f2ea036e48b8)
+
+Sửa tên file thành tuandat.php
+
+![image](https://github.com/user-attachments/assets/a29a886c-5c39-4ed9-bed5-38cff772cf1e)
+
+Sử dụng lệnh nc -lvnp 1234 để lắng nghe kết nối từ pentester đến hệ thống
+
+![image](https://github.com/user-attachments/assets/e54360a1-dd60-4beb-814f-16b770f416c9)
+
+Sử dụng công cụ DirSearch để tìm thư mục chứa file upload
+
+![image](https://github.com/user-attachments/assets/694aebcc-cc6b-4e85-9624-0036469d6695)
+
+Kiểm thử với /upload/kiemthu.php up lên ban đầu
+ 
+![image](https://github.com/user-attachments/assets/18037559-8974-41d2-bbf5-922b90f722f5)
+
+Phản hồi từ hệ thống khi nhập /upload/kiemthu.php
+
+![image](https://github.com/user-attachments/assets/a140fa98-e120-4933-baf8-cfc1afee7d8f)
+
+Tiến hành sửa thành /upload/tuandat.php
+
+![image](https://github.com/user-attachments/assets/555ff733-40c0-412a-bdfc-0b52d45ccd0a)
+
+Máy chủ Ubuntu Server đã bị chiếm quyền diều khiển
+
+![image](https://github.com/user-attachments/assets/5453029b-58ee-48ce-a484-3599693e315c)
+
+![image](https://github.com/user-attachments/assets/7bcbf042-78c1-4c89-9176-d97980e27fa3)
+
+Nguyên nhân dẫn đến lỗ hổng trên:
+
+Không kiểm tra đúng loại tệp tải lên có thể dẫn đến việc tấn công với các tệp độc hại như .php hay .exe.
+
+Không thiết lập giới hạn kích thước tệp tải lên có thể khiến hệ thống dễ bị tấn công với các tệp lớn hoặc có chứa mã độc.
+
+![image](https://github.com/user-attachments/assets/b7bb7780-589e-46ff-80a4-aaa4b4215b9c)
+
+Giải pháp khắc phục:
+
+![image](https://github.com/user-attachments/assets/aafb824c-723a-42d1-ab24-0fd76971a58c)
+
+![image](https://github.com/user-attachments/assets/dc58456d-03b3-4182-baa1-22171ef41684)
+
+DEMO: https://drive.google.com/file/d/1Xnsp9llBvd6KD07x3Vdj-6b3ciH4n41m/view?usp=sharing
