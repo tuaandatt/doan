@@ -25,21 +25,7 @@ http://example.com/download?file=../../../../etc/passwd
 
 Nếu ứng dụng không kiểm tra kỹ đầu vào, nó sẽ trả về nội dung file /etc/passwd.
 
-**2. File Upload Vulnerability**
-
-Mô tả
-
-Lỗ hổng File Upload cho phép người dùng tải lên các tệp độc hại như shell web, mã thực thi,... lên máy chủ nếu không được kiểm soát đúng cách. Nếu không có kiểm tra định dạng, nội dung, hoặc quyền, tệp có thể được thực thi trên máy chủ, dẫn đến chiếm quyền kiểm soát.
-
-Các hình thức tấn công phổ biến:
-
-Tải lên Web Shell: file .php, .asp, .jsp,... chứa mã độc.
-
-Tấn công kết hợp: Kết hợp file upload với Path Traversal hoặc LFI để thực thi mã.
-
 Demo: 
-
-Target: 
 
 ![image](https://github.com/user-attachments/assets/e534fed1-3dae-4b33-b641-d1303b95bbce)
 
@@ -80,3 +66,80 @@ Toàn bộ thông tin nhạy cảm bên trong hệ thống đã bị truy xuất
 
 ![image](https://github.com/user-attachments/assets/7a38bad7-e8af-4a91-92a6-349070f0d871)
 
+
+
+**2. File Upload Vulnerability**
+
+Mô tả
+
+Lỗ hổng File Upload cho phép người dùng tải lên các tệp độc hại như shell web, mã thực thi,... lên máy chủ nếu không được kiểm soát đúng cách. Nếu không có kiểm tra định dạng, nội dung, hoặc quyền, tệp có thể được thực thi trên máy chủ, dẫn đến chiếm quyền kiểm soát.
+
+Các hình thức tấn công phổ biến:
+
+Tải lên Web Shell: file .php, .asp, .jsp,... chứa mã độc.
+
+Demo: 
+
+Kiểm thử hệ thống mục phần bình luận có gửi được file .php hay không
+
+![image](https://github.com/user-attachments/assets/392c901c-a8cc-49ed-8d3d-2b6f5b990027)
+
+gửi 1 file kiemthu.php vào phần upload
+
+![image](https://github.com/user-attachments/assets/71598d9a-3f7d-486f-886d-b6d893b90a78)
+
+![image](https://github.com/user-attachments/assets/8d631e3e-40da-4526-bc7b-dd4918ca0db7)
+
+![image](https://github.com/user-attachments/assets/3e8da87f-e1e4-43d2-8745-a0d527e99904)
+
+![image](https://github.com/user-attachments/assets/e760c51b-599a-47ce-9caa-8c14609e4e49)
+
+Đưa gói tin bắt được vào Repeater để phân tích
+
+![image](https://github.com/user-attachments/assets/61796ee8-2755-4ebb-bb7a-8ba7ee1d244e)
+
+![image](https://github.com/user-attachments/assets/de0db44e-d662-4652-96e4-233d27271fc0)
+
+![image](https://github.com/user-attachments/assets/e0390222-3ca7-4727-91e2-8146db8bf462)
+
+Xóa toàn bộ nội dung file ảnh đã gửi
+
+![image](https://github.com/user-attachments/assets/119c50ca-4ab6-409a-9705-f0e990f149a5)
+
+Copy đoạn code dùng để điều khiển hệ thống thay thế nội dung file ảnh vừa xóa trong Repeater
+
+![image](https://github.com/user-attachments/assets/fe585a0e-2bc3-4085-b63f-a2b1797f4f2d)
+
+![image](https://github.com/user-attachments/assets/1929dd16-1682-4814-8f07-fafd366c36f6)
+
+![image](https://github.com/user-attachments/assets/8d1b424e-ecf1-43ff-b0a4-0b616e80b431)
+
+Sửa tên file thành tuandat.php
+
+![image](https://github.com/user-attachments/assets/7ac47484-5e48-472c-806b-2ee380e0e2b3)
+
+Kiểm thử với Netcat
+
+![image](https://github.com/user-attachments/assets/022ab989-e682-4d4d-901b-7f48afc2833e)
+
+Sử dụng công cụ DirSearch để tìm thư mục chứa file upload
+
+![image](https://github.com/user-attachments/assets/386c73b0-5e40-42f9-9ee3-367965ef42a1)
+
+Kiểm thử với /upload/kiemthu.php up lên ban đầu
+
+![image](https://github.com/user-attachments/assets/b66e6ac7-7317-4878-863c-49b04f618622)
+
+Phản hồi từ hệ thống khi nhập /upload/kiemthu.php
+
+![image](https://github.com/user-attachments/assets/9b06c057-cb80-4b2d-8dbf-a31c9f1c78ee)
+
+tiến hành sửa thành /upload/tuandat.php
+
+
+![image](https://github.com/user-attachments/assets/fbe0de2b-df98-483a-84b9-30d2a66276f1)
+
+Máy chủ Ubuntu Server đã bị chiếm quyền diều khiển
+
+
+![image](https://github.com/user-attachments/assets/fcbd36cd-73fb-48d0-a14b-5b0a478469ea)
